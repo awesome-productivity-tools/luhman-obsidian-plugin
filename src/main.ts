@@ -14,7 +14,7 @@ import {
   TFile,
 } from "obsidian";
 
-const idOnlyRegex = /([0-9]+|[a-z]+)/g;
+const idOnlyRegex = /([0-9]+|[a-z]+|\.)/g;
 const checkSettingsMessage = "Try checking the settings if this seems wrong.";
 
 const lettersIDComponentSuccessors: Record<string, string> = {
@@ -269,6 +269,7 @@ export default class NewZettel extends Plugin {
 
   nextComponentOf(id: string): string {
     const parts = id.match(idOnlyRegex)!;
+    console.log(parts)
     const lastPart = parts.pop()!;
     if (this.isNumber(lastPart)) {
       return "a";
@@ -283,11 +284,11 @@ export default class NewZettel extends Plugin {
 
   fileToId(filename: string): string {
     const ruleRegexes: Record<string, RegExp> = {
-      strict: /^((?:[0-9]+|[a-z]+)+)$/,
+      strict: /^(\d+[a-z]?(?:\.\d+[a-z]?)*)/,
       separator: new RegExp(
         `^((?:[0-9]+|[a-z]+)+)${this.settings.separator}.*`
       ),
-      fuzzy: /^((?:[0-9]+|[a-z]+)+).*/,
+      fuzzy: /^(\d+[a-z]?(?:\.\d+[a-z]?)*)/,
     };
     const match = filename.match(ruleRegexes[this.settings.matchRule]);
     if (match) {
